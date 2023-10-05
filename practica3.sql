@@ -145,3 +145,80 @@ SELECT ENAME,SAL,
        END AS "Sueldo Total"
 FROM EMP
 ORDER BY SAL
+--Obten el nombre, salario y la comision de los empleados que perciben un salario que esta entre la mitad de la comision y la propia comision
+SELECT ENAME,SAL,COMM FROM EMP WHERE SAL BETWEEN COMM/2 AND COMM
+--Obten el complementario del anterior
+SELECT ENAME,SAL,COMM FROM EMP WHERE SAL NOT BETWEEN COMM / 2 AND COMM
+--Lista los nombres y empleos de aquellos empleados cuyo empleo acaba en MAN y cuyo nombre empieza por A
+SELECT ENAME,JOB FROM EMP WHERE ENAME LIKE 'A%' AND JOB LIKE '%MAN'
+/*Intenta resolver la pregunta anterior con un predicado simple, es decir, de forma que en la clausula WHERE no haya conectores 
+logicos como AND, OR, etc. Si ayuda a resolver la pregunta, se puede suponer que el nombre del empleado tiene al menos cinco letras*/
+SELECT ENAME, JOB FROM EMP WHERE SUBSTRING(ENAME, 1, 1) = 'A' AND RIGHT(JOB, 3) = 'MAN'
+--Halla los nombres de los empleados cuyo nombre tiene como maximo cinco caracteres
+SELECT ENAME FROM EMP WHERE LEN(ENAME) <= 5
+/*Suponiendo que el a ̃no proximo la subida del sueldo total de cada empleado sera del 6 %, y el siguiente del 7 %, halla los nombres y el salario total actual,
+del año proximo y del siguiente, de cada empleado. Indique ademas con SI o NO, si el empleado tiene comision, si no tiene comision, el total se considera igual 
+al salario. Se supone que no existen comisiones negativas. */
+SELECT ENAME, SAL AS "Salario Actual",
+       CASE
+           WHEN COMM IS NOT NULL THEN 'SI'
+           ELSE 'NO'
+       END AS "Tiene Comisión",
+       ROUND(SAL * 1.06, 2) AS "Salario del Año Próximo",
+       ROUND(SAL * 1.06 * 1.07, 2) AS "Salario del Siguiente Año"
+FROM EMP
+--Lista los nombres y fecha de contratacion de aquellos empleados que no son vendedores (SALESMAN)
+SELECT ENAME,HIREDATE FROM EMP WHERE JOB!='SALESMAN'
+/*Obten la informacion disponible de los empleados cuyo numero es uno de los siguientes: 7844, 7900, 7521, 7521, 7782, 7934, 7678 y 7369, 
+pero que no sea uno de los siguientes: 7902, 7839, 7499 ni 7878. La sentencia no debe complicarse innecesariamente, y debe dar el resultado correcto
+independientemente de lo empleados almacenados en la base de datos*/
+SELECT * FROM EMP WHERE EMPNO IN (7844, 7900, 7521, 7521, 7782, 7934, 7678, 7369) AND EMPNO NOT IN (7902, 7839, 7499, 7878)
+--Ordena los empleados por su codigo de departamento, y luego de manera descendente por su numero de empleado
+SELECT * FROM EMP ORDER BY DEPTONO ASC, EMPNO DESC;
+/*Para los empleados que tengan como jefe a un empleado con codigo mayor que el suyo, obten
+los que reciben de salario mas de 1000 y menos de 2000, o que estan en el departamento 30*/
+SELECT * FROM EMP WHERE (EMPNO<MGR AND SAL BETWEEN 1000 AND 2000) OR DEPTONO=30
+--Obten el salario m ́as alto de la empresa, el total destinado a comisiones y el numero de empleados
+SELECT MAX(SAL) AS "Salario Máximo",
+       SUM(ISNULL(COMM,0)) AS "Total Comisiones",
+       COUNT(*) AS "Número de Empleados"
+FROM EMP
+--Halla los datos de los empleados cuyo salario es mayor que el del empleado de codigo 7934, ordenando por el salario
+SELECT * FROM EMP WHERE SAL>(SELECT SAL FROM EMP WHERE EMPNO=7934) ORDER BY SAL
+--Obten informacion en la que se reflejen los nombres, empleos y salarios tanto de los empleados que superan en salario a Allen como del propio Allen.
+SELECT E.ENAME,E.JOB,E.SAL FROM EMP E
+JOIN (
+    SELECT SAL
+    FROM EMP
+    WHERE ENAME = 'ALLEN'
+) ALLEN_SALARY
+ON E.SAL >= ALLEN_SALARY.SAL;
+--Halla el nombre el ultimo empleado por orden alfabetico
+SELECT ENAME FROM EMP WHERE ENAME=(SELECT MAX(ENAME) FROM EMP)
+--Halla el salario mas alto, el mas bajo, y la diferencia entre ellos
+SELECT MAX(SAL) AS "Salario Más Alto", MIN(SAL) AS "Salario Más Bajo", MAX(SAL)-MIN(SAL) AS "Diferencia" FROM EMP
+--Sin conocer los resultados del ejercicio anterior, ¿quienes reciben el salario mas alto y el mas bajo, y a cuanto ascienden estos salarios?
+SELECT ENAME,SAL FROM EMP WHERE SAL=(SELECT MAX(SAL) FROM EMP) UNION ALL
+SELECT ENAME,SAL FROM EMP WHERE SAL=(SELECT MIN(SAL) FROM EMP)
+/*Considerando empleados con salario menor de 5000, halla la media de los salarios de los departamentos cuyo salario mınimo supera a 900. 
+Muestra tambien el codigo y el nombre de los departamentos*/
+SELECT D.DEPTONO, D.DNAME, AVG(E.SAL) AS "Media de Salarios" FROM DEPT D
+JOIN EMP E ON D.DEPTONO=E.DEPTONO
+WHERE E.SAL < 5000
+GROUP BY D.DEPTONO, D.DNAME
+HAVING MIN(E.SAL)>900
+--¿Que empleados trabajan en ciudades de mas de cinco letras? Ordena el resultado inversamente por ciudades y normalmente por los nombres de los empleados
+SELECT E.ENAME, D.LOC FROM EMP E
+JOIN DEPT D ON E.DEPTONO = D.DEPTONO
+WHERE LEN(D.LOC)>5
+ORDER BY D.LOC DESC, E.ENAME
+--Halla los empleados cuyo salario supera o coincide con la media del salario de la empresa
+SELECT * FROM EMP WHERE SAL>=(SELECT AVG(SAL) FROM EMP)
+--Obten los empleados cuyo salario supera al de sus compañeros de departamento
+SELECT E1.* FROM EMP E1
+JOIN (
+    SELECT DEPTONO, MAX(SAL) AS "Salario Máximo"
+    FROM EMP
+    GROUP BY DEPTONO
+) E2 ON E1.DEPTONO = E2.DEPTONO AND E1.SAL>E2."Salario Máximo"
+
