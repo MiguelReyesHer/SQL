@@ -102,7 +102,7 @@ SELECT ENAME,SAL AS "SALARIO ORIGINAL",SAL+1000 AS "NUEVO SALARIO" FROM EMP WHER
 SELECT * FROM EMP WHERE COMM > SAL/2
 --Halla los empleados que no tienen comision, o que la tengan menor o igual que el 25 % de su salario
 SELECT * FROM EMP WHERE COMM IS NULL OR COMM <= SAL*0.25
-/*Obten una lista de nombres de empleados y sus salarios, de forma que en la salida aparezca en todas las filas “Nombre:” y “Salario:” 
+/*Obten una lista de nombres de empleados y sus salarios, de forma que en la salida aparezca en todas las filas â€œNombre:â€ y â€œSalario:â€ 
 antes del respectivo campo. Hazlo de forma que selecciones exactamente tres expresiones.*/
 SELECT CONCAT('Nombre: ',ENAME), CONCAT('Salario: ',CAST(SAL AS varchar(10))) FROM EMP
 --Hallar el codigo, salario y comision de los empleados cuyo codigo sea mayor que 7500           
@@ -118,7 +118,7 @@ SELECT ENAME FROM EMP WHERE SAL>1000 AND MGR=7698
 --Halla el conjunto complementario del resultado del ejercicio anterior
 SELECT ENAME FROM EMP WHERE SAL<=1000 OR MGR != 7698
 --Indica para cada empleado el porcentaje que supone su comision sobre su salario, ordenando el resultado por el nombre del mismo.
-SELECT ENAME,(COMM/SAL)*100 AS "Porcentaje de Comisión" FROM EMP ORDER BY ENAME
+SELECT ENAME,(COMM/SAL)*100 AS "Porcentaje de ComisiÃ³n" FROM EMP ORDER BY ENAME
 --Hallar los empleados del departamento 10 cuyo nombre no contiene la cadena LA
 SELECT * FROM EMP WHERE DEPTONO = 10 AND ENAME NOT LIKE '%LA%'
 --Obten los empleados que no son supervisados por ningun otro
@@ -129,11 +129,11 @@ SELECT DNAME,LOC FROM DEPT WHERE DNAME NOT IN ('SALES','RESEARCH') ORDER BY LOC
 y cuyo salario es superior a 800, ordenado por fecha de contratacion*/
 SELECT ENAME,DEPTONO FROM EMP WHERE JOB='CLERK' AND DEPTONO != 10 AND SAL>800 ORDER BY HIREDATE
 --Para los empleados que tengan comision, obten sus nombres y el cociente entre su salario y su comision (excepto cuando la comision sea cero), ordenando el resultado por nombre
-SELECT ENAME,SAL/COMM AS "Cociente Salario/Comisión" FROM EMP WHERE COMM IS NOT NULL AND COMM !=0 ORDER BY ENAME
+SELECT ENAME,SAL/COMM AS "Cociente Salario/ComisiÃ³n" FROM EMP WHERE COMM IS NOT NULL AND COMM !=0 ORDER BY ENAME
 --Lista toda la informacion sobre los empleados cuyo nombre completo tenga exactamente 5 caracteres
 SELECT * FROM EMP WHERE LEN(ENAME)=5
 --Lo mismo, pero para los empleados cuyo nombre tenga al menos cinco letras
-SELECT * FROM  WHERE LEN(ENAME)>=5
+SELECT * FROM  EMP WHERE LEN(ENAME)>=5
 --Halla los datos de los empleados que, o bien su nombre empieza por A y su salario es superior a 1000, o bien reciben comision y trabajan en el departamento 30
 SELECT * FROM EMP WHERE (ENAME LIKE 'A%' AND SAL>1000) OR (COMM IS NOT NULL AND DEPTONO = 30)
 /*Halla el nombre, el salario y el sueldo total de todos los empleados, ordenando el resultado primero por salario y luego por el sueldo total. 
@@ -145,138 +145,3 @@ SELECT ENAME,SAL,
        END AS "Sueldo Total"
 FROM EMP
 ORDER BY SAL
-
-
-
-
-SELECT ENAME, SAL, COMM
-FROM EMP
-WHERE SAL BETWEEN COMM / 2 AND COMM;
-SELECT ENAME, SAL, COMM
-FROM EMP
-WHERE SAL NOT BETWEEN COMM / 2 AND COMM;
-SELECT ENAME, JOB
-FROM EMP
-WHERE ENAME LIKE 'A%' AND JOB LIKE '%MAN';
-SELECT ENAME, JOB
-FROM EMP
-WHERE SUBSTR(ENAME, 1, 1) = 'A' AND SUBSTR(JOB, -3) = 'MAN';
-SELECT ENAME
-FROM EMP
-WHERE LENGTH(ENAME) <= 5;
-SELECT ENAME,
-       SAL AS "Salario Actual",
-       CASE
-           WHEN COMM IS NOT NULL THEN 'SI'
-           ELSE 'NO'
-       END AS "Tiene Comisión",
-       ROUND(SAL * 1.06, 2) AS "Salario del Año Próximo",
-       ROUND(SAL * 1.06 * 1.07, 2) AS "Salario del Siguiente Año"
-FROM EMP;
-SELECT ENAME, HIREDATE
-FROM EMP
-WHERE JOB != 'SALESMAN';
-SELECT *
-FROM EMP
-WHERE EMPNO IN (7844, 7900, 7521, 7521, 7782, 7934, 7678, 7369)
-AND EMPNO NOT IN (7902, 7839, 7499, 7878);
-SELECT *
-FROM EMP
-ORDER BY DEPTNO ASC, EMPNO DESC;
-SELECT *
-FROM EMP
-WHERE (EMPNO < MGR AND SAL BETWEEN 1000 AND 2000) OR DEPTNO = 30;
-SELECT MAX(SAL) AS "Salario Máximo",
-       SUM(NVL(COMM, 0)) AS "Total Comisiones",
-       COUNT(*) AS "Número de Empleados"
-FROM EMP;
-SELECT *
-FROM EMP
-WHERE SAL > (SELECT SAL FROM EMP WHERE EMPNO = 7934)
-ORDER BY SAL;
-SELECT ENAME, JOB, SAL
-FROM EMP
-WHERE SAL >= (SELECT SAL FROM EMP WHERE ENAME = 'ALLEN' AND ROWNUM = 1)
-ORDER BY SAL;
-SELECT ENAME
-FROM EMP
-WHERE ROWNUM = 1
-ORDER BY ENAME DESC;
-SELECT MAX(SAL) AS "Salario Más Alto",
-       MIN(SAL) AS "Salario Más Bajo",
-       MAX(SAL) - MIN(SAL) AS "Diferencia"
-FROM EMP;
-SELECT ENAME, SAL
-FROM EMP
-WHERE SAL = (SELECT MAX(SAL) FROM EMP)
-UNION ALL
-SELECT ENAME, SAL
-FROM EMP
-WHERE SAL = (SELECT MIN(SAL) FROM EMP);
-SELECT D.DEPTNO, D.DNAME, AVG(E.SAL) AS "Media de Salarios"
-FROM DEPT D
-JOIN EMP E ON D.DEPTNO = E.DEPTNO
-WHERE E.SAL < 5000
-GROUP BY D.DEPTNO, D.DNAME
-HAVING MIN(E.SAL) > 900;
-SELECT E.ENAME, D.LOC
-FROM EMP E
-JOIN DEPT D ON E.DEPTNO = D.DEPTNO
-WHERE LENGTH(D.LOC) > 5
-ORDER BY D.LOC DESC, E.ENAME;
-SELECT *
-FROM EMP
-WHERE SAL >= (SELECT AVG(SAL) FROM EMP);
-SELECT E1.*
-FROM EMP E1
-JOIN (
-    SELECT DEPTNO, MAX(SAL) AS "Salario Máximo"
-    FROM EMP
-    GROUP BY DEPTNO
-) E2 ON E1.DEPTNO = E2.DEPTNO AND E1.SAL > E2."Salario Máximo";
-SELECT COUNT(DISTINCT JOB) AS "Empleos Diferentes",
-       COUNT(*) AS "Número de Empleados",
-       COUNT(DISTINCT SAL) AS "Salarios Diferentes",
-       SUM(SAL) AS "Suma de Salarios"
-FROM EMP
-WHERE DEPTNO = 30;
-SELECT COUNT(*) AS "Número de Empleados con Comisión"
-FROM EMP
-WHERE COMM IS NOT NULL;
-SELECT COUNT(*) AS "Número de Empleados en el Departamento 20"
-FROM EMP
-WHERE DEPTNO = 20;
-SELECT D.DEPTNO, D.DNAME, COUNT(E.EMPNO) AS "Número de Empleados"
-FROM DEPT D
-JOIN EMP E ON D.DEPTNO = E.DEPTNO
-GROUP BY D.DEPTNO, D.DNAME
-HAVING COUNT(E.EMPNO) > 3;
-SELECT E1.*
-FROM EMP E1
-JOIN (
-    SELECT DISTINCT JOB
-    FROM EMP
-    WHERE DEPTNO = (SELECT DEPTNO FROM EMP WHERE JOB = 'SALESMAN' AND ROWNUM = 1)
-) E2 ON E1.JOB = E2.JOB
-WHERE E1.DEPTNO = 10;
-SELECT E1.*
-FROM EMP E1
-WHERE E1.EMPNO IN (SELECT DISTINCT MGR FROM EMP WHERE MGR IS NOT NULL)
-ORDER BY E1.ENAME DESC;
-SELECT E1.*
-FROM EMP E1
-WHERE E1.JOB IN (SELECT DISTINCT JOB FROM EMP WHERE LOC = 'CHICAGO');
-SELECT JOB, COUNT(*) AS "Número de Empleados"
-FROM EMP
-GROUP BY JOB;
-SELECT DEPTNO, SUM(SAL) AS "Suma de Salarios"
-FROM EMP
-GROUP BY DEPTNO;
-SELECT D.DEPTNO, D.DNAME
-FROM DEPT D
-LEFT JOIN EMP E ON D.DEPTNO = E.DEPTNO
-WHERE E.EMPNO IS NULL;
-SELECT E1.*
-FROM EMP E1
-LEFT JOIN EMP E2 ON E1.EMPNO = E2.MGR
-WHERE E2.MGR IS NULL;
