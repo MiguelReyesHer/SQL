@@ -43,27 +43,27 @@ values ('281-240784-0004Y','Esquivel Leonel Alfonso',26,'Presidente','Nagarote',
 insert into Empleado
 values ('281-161277-0008R','Perez Luis',32,'Empleado','Managua','1980/03/02',16890,0,10)
 
---Inicio de la transacciÛn
+--Inicio de la transacci√≥n
 begin transaction
 --Insertamos un nuevo empleado llamado Montes Fahrid
 insert into Empleado 
 values ('281-164328-0006H','Montes Fahrid',31,'Vendedor','Nagarote','1981/09/11',15000,0,40) 
---ActualizaciÛn de salario y comsiÛn a Lopez Hernandez Julio
+--Actualizaci√≥n de salario y comsi√≥n a Lopez Hernandez Julio
 update Empleado set salario=13578, comision=0 where nombre='Lopez Hernandez Julio' 
---Punto de guardado de la transacciÛn
+--Punto de guardado de la transacci√≥n
 save tran Savepoint1
---ActualizaciÛn del oficio y salario a Perez Luis
+--Actualizaci√≥n del oficio y salario a Perez Luis
 update Empleado set oficio = 'Vendedor', salario=12000 where nombre = 'Perez Luis' 
 
---Deshace TODO lo que alberga la transacciÛn
+--Deshace TODO lo que alberga la transacci√≥n
 rollback transaction 
---Deshace la transacciÛn hasta el punto del savepoint1 (Todo lo que no estÈ antes del savepoint ser· deshecho)
+--Deshace la transacci√≥n hasta el punto del savepoint1 (Todo lo que no est√© antes del savepoint ser√° deshecho)
 rollback transaction Savepoint1 
 
---ConfirmaciÛn FINAL de la transacciÛn (Una vez confirmada la transacciÛn ya no es posible ejecutar el ROLLBACK)
+--Confirmaci√≥n FINAL de la transacci√≥n (Una vez confirmada la transacci√≥n ya no es posible ejecutar el ROLLBACK)
 commit transaction 
 
 select * from Empleado 
 
---Comando que permite la visualizaciÛn de cuantas transacciones est·n abiertas
+--Comando que permite la visualizaci√≥n de cuantas transacciones est√°n abiertas
 select @@TRANCOUNT as TransaccionesAbiertas  
