@@ -1,5 +1,5 @@
-Create Database Ejemplo_T
-use Ejemplo_T
+Create Database Ejemplo_Tr
+use Ejemplo_Tr
 
 Create table producto(
 id_cod int identity primary key,
