@@ -1,3 +1,4 @@
+--Reyes Hernández Miguel Ángel - 421063125
 CREATE DATABASE Practica3_1
 USE Practica3_1
 
@@ -73,27 +74,6 @@ WHERE E.DEPTONO IS NOT NULL
 -- Muestra el nombre del empleado y el nombre de su jefe
 SELECT E.ENAME AS "Empleado", M.ENAME AS "Jefe" FROM EMP E
 LEFT JOIN EMP M ON E.MGR=M.EMPNO
--- Muestra el nombre del departamento y el salario promedio de sus empleados
-SELECT D.DNAME, AVG(E.SAL) AS "Salario Promedio" FROM DEPT D
-LEFT JOIN EMP E ON D.DEPTONO=E.DEPTONO
-GROUP BY D.DNAME
--- Muestra el nombre del empleado, su departamento y el salario promedio del departamento, solo si el salario promedio es mayor a 2000
-SELECT E.ENAME, D.DNAME, AVG(E.SAL) AS "Salario Promedio" FROM EMP E
-INNER JOIN DEPT D ON E.DEPTONO=D.DEPTONO
-GROUP BY E.ENAME, D.DNAME
-HAVING AVG(E.SAL)>2000
--- Muestra el nombre del departamento y el total de comisiones pagadas por los empleados del departamento
-SELECT D.DNAME, SUM(E.COMM) AS "Total de Comisiones" FROM DEPT D
-LEFT JOIN EMP E ON D.DEPTONO=E.DEPTONO
-GROUP BY D.DNAME
--- Muestra el nombre del empleado y su departamento, solo si el empleado tiene un trabajo de "Manager"
-SELECT E.ENAME, D.DNAME FROM EMP E
-INNER JOIN DEPT D ON E.DEPTONO=D.DEPTONO
-WHERE E.JOB='Manager'
--- Muestra el nombre del empleado, su salario y el nombre del departamento, solo si el salario es superior a 2500
-SELECT E.ENAME, E.SAL, D.DNAME FROM EMP E
-INNER JOIN DEPT D ON E.DEPTONO=D.DEPTONO
-WHERE E.SAL>2500
 
 
 --Procedimientos almacenados:
@@ -136,7 +116,7 @@ CREATE PROCEDURE InsertarEmpleado
     @NumeroDepartamento INT
 AS
 BEGIN
-    INSERT INTO EMP (EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTONO)
+    INSERT INTO EMP (EMPNO,ENAME,JOB,MGR,HIREDATE,SAL,COMM,DEPTONO)
     VALUES (@NumeroEmpleado, @NombreEmpleado, @Trabajo, @Gerente, @FechaContratacion, @Salario, @Comision, @NumeroDepartamento);
 END
 --Actualiza el salario de un empleado por su número de empleado
@@ -149,50 +129,44 @@ BEGIN
     SET SAL=@NuevoSalario
     WHERE EMPNO=@NumeroEmpleado;
 END
---Elimina un empleado por su número de empleado
-CREATE PROCEDURE EliminarEmpleado
-    @NumeroEmpleado INT
-AS
-BEGIN
-    DELETE FROM EMP
-    WHERE EMPNO=@NumeroEmpleado;
-END
---Obtiene el total de comisiones pagadas en un departamento por su número de departamento
-CREATE PROCEDURE ObtenerTotalComisionesEnDepartamento
-    @NumeroDepartamento INT
-AS
-BEGIN
-    SELECT SUM(COMM) AS "Total de Comisiones"
-    FROM EMP
-    WHERE DEPTONO=@NumeroDepartamento;
-END
---Obtiene la fecha de contratación de un empleado por su número de empleado
-CREATE PROCEDURE ObtenerFechaContratacion
-    @NumeroEmpleado INT
-AS
-BEGIN
-    SELECT HIREDATE
-    FROM EMP
-    WHERE EMPNO=@NumeroEmpleado;
-END
--- Obtiene el nombre del jefe de un empleado por su número de empleado
-CREATE PROCEDURE ObtenerJefeEmpleado
-    @NumeroEmpleado INT
-AS
-BEGIN
-    SELECT E.ENAME AS "Empleado", M.ENAME AS "Jefe"
-    FROM EMP E
-    LEFT JOIN EMP M ON E.MGR = M.EMPNO
-    WHERE E.EMPNO=@NumeroEmpleado;
-END
---Obtiene el departamento con el salario promedio más alto
-CREATE PROCEDURE ObtenerDepartamentoConSalarioPromedioMasAlto
-AS
-BEGIN
-    SELECT TOP 1 D.DNAME AS "Nombre del Departamento",
-                AVG(E.SAL) AS "Salario Promedio"
-    FROM DEPT D
-    INNER JOIN EMP E ON D.DEPTONO=E.DEPTONO
-    GROUP BY D.DNAME
-    ORDER BY AVG(E.SAL) DESC;
-END
+
+
+--Transacciones
+--Crear una transacción del salario de un empleado en base a su nombre
+select * from emp
+BEGIN Transaction 
+	update EMP  set sal =13578 where ENAME ='MILLER' 
+	save tran Savepoint1
+rollback transaction 
+rollback transaction Savepoint1 
+commit 
+--Crear una transacción de la comisión de los empleados que tengan el mismo jefe cuyo número de empleado sea 7839 y 7566
+BEGIN Transaction 
+	update EMP SET COMM=5000 WHERE MGR =  7839
+	save tran savepoint1
+	update EMP SET COMM=3000 WHERE MGR =  7566
+save  tran savepoint2
+rollback transaction 
+rollback transaction Savepoint1 
+commit 
+--Crear una transacción que aumente en 20% el salario de los empleados que tengan comisión nula
+BEGIN Transaction
+	update EMP SET SAL=sal*1.20 WHERE  COMM IS NULL
+	save tran savepoint1
+rollback transaction 
+select*from EMP 
+commit
+--Crear una transacción que reste un 3% del salrio a los empleados cuyo salario sea mayor a 2500
+BEGIN Transaction
+	update EMP SET SAL=sal*.97 WHERE  SAL>2500
+	save tran savepoint1
+rollback transaction 
+select*from EMP 
+commit
+--Crear una transacción que cambie a ALLEN de puesto a MANAGER y su salario aumente a 2900
+BEGIN Transaction
+	update EMP SET JOB='MANAGER', SAL=2900 WHERE  JOB= 'SALESMAN' and ENAME = 'ALLEN'
+	save tran savepoint1
+rollback transaction 
+select*from EMP 
+commit
