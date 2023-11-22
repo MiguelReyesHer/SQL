@@ -1,9 +1,9 @@
-/*	Proyecto base de datos: PokÈdex
-	Reyes Hern·ndez Miguel ¡ngel
-	GÛmez Huerta Rafael Uriel
+/*	Proyecto base de datos: Pok√©dex
+	Reyes Hern√°ndez Miguel √Ångel
+	G√≥mez Huerta Rafael Uriel
 	San Pedro Rivera Roberto Yael
-	Mendoza Rivera NoÈ
-	S·nchez Rojas Yael*/
+	Mendoza Rivera No√©
+	S√°nchez Rojas Yael*/
 
 CREATE DATABASE Pokedex
 USE Pokedex
@@ -23,7 +23,7 @@ CREATE TABLE Region (
 )
 CREATE TABLE MetodoEvolucion (
     IDMetodoEvolucion INT PRIMARY KEY,
-    MetodoEvolucion CHAR(20) NOT NULL  --Ayuda a buscar pokÈmon que puedan evolucionar con lo que ya tiene el usuario en su inventario
+    MetodoEvolucion CHAR(20) NOT NULL  --Ayuda a buscar pok√©mon que puedan evolucionar con lo que ya tiene el usuario en su inventario
 )
 CREATE TABLE Evolucion (
     IDEvolucion INT PRIMARY KEY,
@@ -32,21 +32,21 @@ CREATE TABLE Evolucion (
     IDMetodoEvolucion INT FOREIGN KEY REFERENCES MetodoEvolucion(IDMetodoEvolucion)
 )
 CREATE TABLE Caracteristicas (
-    IDCaracteristicas INT PRIMARY KEY,--Uno o m·s pokÈmon pueden tener caracterÌsticas similares
-    TamaÒo INT,
+    IDCaracteristicas INT PRIMARY KEY,--Uno o m√°s pok√©mon pueden tener caracter√≠sticas similares
+    Tama√±o INT,
     Peso INT,
-    Genero CHAR(10) --('Macho', 'Hembra') Sirve para buscar evoluciones diferentes por gÈnero
+    Genero CHAR(10) --('Macho', 'Hembra') Sirve para buscar evoluciones diferentes por g√©nero
 )
 CREATE TABLE Estadisticas (
-    IDEstadisticas INT PRIMARY KEY,--Uno o m·s pokÈmon pueden tener estadÌsticas similares
+    IDEstadisticas INT PRIMARY KEY,--Uno o m√°s pok√©mon pueden tener estad√≠sticas similares
     Ataque INT,
     Defensa INT,
     PuntosDeSalud INT,
     PuntosDeCombate INT,
 )
 CREATE TABLE SetMovimientos(
-    IDSetMovimientos INT PRIMARY KEY, --Varios pokÈmon pueden compartir un set de movimiento con ayuda de MT's
-    NombresMovimientos CHAR(40) NOT NULL --Todo pokemon tiene mÌnimo 2 movimientos y m·ximo 4
+    IDSetMovimientos INT PRIMARY KEY, --Varios pok√©mon pueden compartir un set de movimiento con ayuda de MT's
+    NombresMovimientos CHAR(40) NOT NULL --Todo pokemon tiene m√≠nimo 2 movimientos y m√°ximo 4
 )
 CREATE TABLE Pokemon (
     IDPokemon INT PRIMARY KEY,
@@ -60,29 +60,29 @@ CREATE TABLE Pokemon (
     IDSetMovimientos INT FOREIGN KEY REFERENCES SetMovimientos(IDSetMovimientos)
 )
 
---Por defecto la PokÈdex ya posee algunos atributos; incluso si el usuario no ha hecho ninguna inserciÛn, como los mÈtodos de evoluciÛn, algunos set de movimientos, tipos, debilidad, regiones
+--Por defecto la Pok√©dex ya posee algunos atributos; incluso si el usuario no ha hecho ninguna inserci√≥n, como los m√©todos de evoluci√≥n, algunos set de movimientos, tipos, debilidad, regiones
 INSERT INTO Tipo (IDTipo, NombreTipo) VALUES
 (1, 'Planta'),
 (2, 'Fuego'),
 (3, 'Agua'),
-(4, 'ElÈctrico'),
+(4, 'El√©ctrico'),
 (5, 'Hielo'),
 (6, 'Lucha'),
-(7, 'PsÌquico'),
+(7, 'Ps√≠quico'),
 (8, 'Tierra'),
 (9, 'Veneno'),
 (10, 'Volador');
 INSERT INTO Debilidad (IDDebilidad, IDTipoOrigen, IDTipoDebilidad) VALUES
-(1, 2, 1),  -- Fuego es dÈbil contra Agua
-(2, 3, 2),  -- Agua es dÈbil contra Planta
-(3, 1, 3),  -- Planta es dÈbil contra Fuego
-(4, 5, 4),  -- Hielo es dÈbil contra ElÈctrico
-(5, 6, 7),  -- Lucha es dÈbil contra PsÌquico
-(6, 8, 5),  -- Tierra es dÈbil contra Hielo
-(7, 9, 10), -- Veneno es dÈbil contra Volador
-(8, 10, 6), -- Volador es dÈbil contra Lucha
-(9, 7, 9),  -- PsÌquico es dÈbil contra Veneno
-(10, 4, 8); -- ElÈctrico es dÈbil contra Tierra
+(1, 2, 1),  -- Fuego es d√©bil contra Agua
+(2, 3, 2),  -- Agua es d√©bil contra Planta
+(3, 1, 3),  -- Planta es d√©bil contra Fuego
+(4, 5, 4),  -- Hielo es d√©bil contra El√©ctrico
+(5, 6, 7),  -- Lucha es d√©bil contra Ps√≠quico
+(6, 8, 5),  -- Tierra es d√©bil contra Hielo
+(7, 9, 10), -- Veneno es d√©bil contra Volador
+(8, 10, 6), -- Volador es d√©bil contra Lucha
+(9, 7, 9),  -- Ps√≠quico es d√©bil contra Veneno
+(10, 4, 8); -- El√©ctrico es d√©bil contra Tierra
 INSERT INTO Region (IDRegion, NombreRegion) VALUES
 (1, 'Kanto'),
 (2, 'Johto'),
@@ -109,7 +109,7 @@ INSERT INTO Evolucion (IDEvolucion, PokemonOrigen, PokemonEvolucion, IDMetodoEvo
 (3, 13, 16, 3), -- Eevee evoluciona a Espeon por Felicidad
 (4, 25, 40, 4), -- Pikachu evoluciona a Raichu al subir de nivel en la noche
 (5, 35, 36, 5); -- Clefairy evoluciona a Clefable al subir de nivel con Objeto Especial
-INSERT INTO Caracteristicas (IDCaracteristicas, TamaÒo, Peso, Genero) VALUES
+INSERT INTO Caracteristicas (IDCaracteristicas, Tama√±o, Peso, Genero) VALUES
 (1, 10, 5, 'Macho'),
 (2, 8, 7, 'Hembra'),
 (3, 15, 12, 'Macho'),
@@ -122,14 +122,14 @@ INSERT INTO Estadisticas (IDEstadisticas, Ataque, Defensa, PuntosDeSalud, Puntos
 (4, 70, 30, 85, 65),
 (5, 60, 50, 75, 60);
 INSERT INTO SetMovimientos (IDSetMovimientos, NombresMovimientos) VALUES
-(1, 'Placaje, AraÒazo'),
-(2, 'Ascuas, GruÒido, Lanzallamas'),
+(1, 'Placaje, Ara√±azo'),
+(2, 'Ascuas, Gru√±ido, Lanzallamas'),
 (3, 'Burbuja, Pistola Agua'),
 (4, 'Rayo, Trueno, Atactrueno'),
-(5, 'AraÒazo, Malicioso, Placaje, Derribo');
+(5, 'Ara√±azo, Malicioso, Placaje, Derribo');
 -- Insertar valores en la tabla Pokemon
 INSERT INTO Pokemon VALUES
-(1, 'Banette', 1, 8, 9, NULL, 1, 1, 1), --Para Dibujitos <3
+(1, 'Banette', 1, 8, 9, NULL, 1, 1, 1), 
 (2, 'Torchic', 3, 2, 1, 3, 2, 2, 2),
 (3, 'Squirtle', 1, 3, 8, 4, 3, 3, 3),
 (4, 'Pikachu', 1, 4, 10, NULL, 4, 4, 4),
