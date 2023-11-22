@@ -23,7 +23,7 @@ CREATE TABLE Region (
 )
 CREATE TABLE MetodoEvolucion (
     IDMetodoEvolucion INT PRIMARY KEY,
-    MetodoEvolucion CHAR(20) NOT NULL  --Ayuda a buscar pokémon que puedan evolucionar con lo que ya tiene el usuario en su inventario
+    MetodoEvolucion CHAR(50) NOT NULL  --Ayuda a buscar pokémon que puedan evolucionar con lo que ya tiene el usuario en su inventario
 )
 CREATE TABLE Evolucion (
     IDEvolucion INT PRIMARY KEY,
