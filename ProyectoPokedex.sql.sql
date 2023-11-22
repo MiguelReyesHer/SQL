@@ -9,51 +9,51 @@ CREATE DATABASE Pokedex
 USE Pokedex
 
 CREATE TABLE Tipo (
-    IDTipo INT PRIMARY KEY,
-    NombreTipo CHAR(20) NOT NULL
+    IDTipo INT PRIMARY KEY NOT NULL,
+    NombreTipo CHAR(20) 
 )
 CREATE TABLE Debilidad (
-    IDDebilidad INT PRIMARY KEY,
-    IDTipoOrigen INT NOT NULL FOREIGN KEY (IDTipoOrigen) REFERENCES Tipo(IDTipo),
-    IDTipoDebilidad INT NOT NULL FOREIGN KEY (IDTipoDebilidad) REFERENCES Tipo(IDTipo)
+    IDDebilidad INT PRIMARY KEY NOT NULL,
+    IDTipoOrigen INT FOREIGN KEY (IDTipoOrigen) REFERENCES Tipo(IDTipo),
+    IDTipoDebilidad INT FOREIGN KEY (IDTipoDebilidad) REFERENCES Tipo(IDTipo)
 )
 CREATE TABLE Region (
-    IDRegion INT PRIMARY KEY,
-    NombreRegion CHAR(20) NOT NULL
+    IDRegion INT PRIMARY KEY NOT NULL,
+    NombreRegion CHAR(20)
 )
 CREATE TABLE MetodoEvolucion (
-    IDMetodoEvolucion INT PRIMARY KEY,
-    MetodoEvolucion CHAR(50) NOT NULL  --Ayuda a buscar pokémon que puedan evolucionar con lo que ya tiene el usuario en su inventario
+    IDMetodoEvolucion INT PRIMARY KEY NOT NULL
+    MetodoEvolucion CHAR(50) --Ayuda a buscar pokémon que puedan evolucionar con lo que ya tiene el usuario en su inventario
 )
 CREATE TABLE Evolucion (
-    IDEvolucion INT PRIMARY KEY,
-    PokemonOrigen CHAR(20) NOT NULL,
-    PokemonEvolucion CHAR(20) NOT NULL, 
+    IDEvolucion INT PRIMARY KEY NOT NULL,
+    PokemonOrigen CHAR(20),
+    PokemonEvolucion CHAR(20),
     IDMetodoEvolucion INT FOREIGN KEY REFERENCES MetodoEvolucion(IDMetodoEvolucion)
 )
 CREATE TABLE Caracteristicas (
-    IDCaracteristicas INT PRIMARY KEY,--Uno o más pokémon pueden tener características similares
+    IDCaracteristicas INT PRIMARY KEY NOT NULL,--Uno o más pokémon pueden tener características similares
     Tamaño INT,
     Peso INT,
     Genero CHAR(10) --('Macho', 'Hembra') Sirve para buscar evoluciones diferentes por género
 )
 CREATE TABLE Estadisticas (
-    IDEstadisticas INT PRIMARY KEY,--Uno o más pokémon pueden tener estadísticas similares
+    IDEstadisticas INT PRIMARY KEY NOT NULL,--Uno o más pokémon pueden tener estadísticas similares
     Ataque INT,
     Defensa INT,
     PuntosDeSalud INT,
     PuntosDeCombate INT,
 )
 CREATE TABLE SetMovimientos(
-    IDSetMovimientos INT PRIMARY KEY, --Varios pokémon pueden compartir un set de movimiento con ayuda de MT's
-    NombresMovimientos CHAR(40) NOT NULL --Todo pokemon tiene mínimo 2 movimientos y máximo 4
+    IDSetMovimientos INT PRIMARY KEY NOT NULL, --Varios pokémon pueden compartir un set de movimiento con ayuda de MT's
+    NombresMovimientos CHAR(40) --Todo pokemon tiene mínimo 2 movimientos y máximo 4
 )
 CREATE TABLE Pokemon (
-    IDPokemon INT PRIMARY KEY,
+    IDPokemon INT PRIMARY KEY NOT NULL,
     NombrePokemon CHAR(15) NOT NULL,
     IDRegion INT FOREIGN KEY REFERENCES Region(IDRegion),
-    IDTipo INT NOT NULL FOREIGN KEY REFERENCES Tipo(IDTipo),
-    IDDebilidad INT NOT NULL FOREIGN KEY REFERENCES Debilidad(IDDebilidad),
+    IDTipo INT FOREIGN KEY REFERENCES Tipo(IDTipo),
+    IDDebilidad INT FOREIGN KEY REFERENCES Debilidad(IDDebilidad),
     IDEvolucion INT FOREIGN KEY REFERENCES Evolucion(IDEvolucion),
     IDEstadisticas INT FOREIGN KEY REFERENCES Estadisticas(IDEstadisticas),
     IDCaracteristicas INT FOREIGN KEY REFERENCES Caracteristicas(IDCaracteristicas),
