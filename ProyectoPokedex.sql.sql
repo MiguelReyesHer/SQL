@@ -22,7 +22,7 @@ CREATE TABLE Region (
     NombreRegion CHAR(20)
 )
 CREATE TABLE MetodoEvolucion (
-    IDMetodoEvolucion INT PRIMARY KEY NOT NULL
+    IDMetodoEvolucion INT PRIMARY KEY NOT NULL,
     MetodoEvolucion CHAR(50) --Ayuda a buscar pokémon que puedan evolucionar con lo que ya tiene el usuario en su inventario
 )
 CREATE TABLE Evolucion (
@@ -42,7 +42,7 @@ CREATE TABLE Estadisticas (
     Ataque INT,
     Defensa INT,
     PuntosDeSalud INT,
-    PuntosDeCombate INT,
+    PuntosDeCombate INT
 )
 CREATE TABLE SetMovimientos(
     IDSetMovimientos INT PRIMARY KEY NOT NULL, --Varios pokémon pueden compartir un set de movimiento con ayuda de MT's
