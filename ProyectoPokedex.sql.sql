@@ -158,7 +158,6 @@ INSERT INTO SetMovimientos (IDSetMovimientos, NombresMovimientos) VALUES
 (8, 'Gruñido, Colmillo Rayo, Cabezazo Zen'),
 (9, 'Terremoto, Excavar, Triturar'),
 (10, 'Rayo Carga, Ventisca, Onda Certera');
--- Insertar valores en la tabla Pokemon
 INSERT INTO Pokemon (IDPokemon,NombrePokemon,IDRegion,IDTipo,IDDebilidad,IDEvolucion,IDEstadisticas,IDCaracteristicas,IDSetMovimientos) VALUES
 (0001,'Pikachu',1,4,4,2,9,NULL,9),
 (0002,'Raichu',1,4,4,2,9,NULL,4),
