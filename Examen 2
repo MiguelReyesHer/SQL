@@ -1,0 +1,126 @@
+create database examen2bd
+use examen2bd
+
+create table DEPT(
+DEPTNO int primary key not null,
+DNAME varchar(14),
+LOC varchar(13))
+
+create table EMP(
+EMPNO int primary key not null,
+ENAME varchar(10),
+JOB varchar(9),
+MGR varchar(4),
+HIRADATE date,
+SAL float,
+COMM float,
+DEPTNO int foreign key References DEPT 
+)
+
+insert into DEPT
+values('10','ACCOUNTING','NEW YORK')
+insert into DEPT
+values('20','RESEARCH','DALLAS')
+insert into DEPT
+values('30','SALES','CHICAGO')
+insert into DEPT
+values('40','OPERATIONS','BOSTON')
+
+INSERT INTO EMP             --MES-DIA-AÑO
+values ('7369','SMITH','CLERK','7902','12-17-80','800',NULL,'20')
+INSERT INTO EMP
+values ('7499','ALLEN','SALESMAN','7698','02-20-81','1600','300','30')
+INSERT INTO EMP
+values ('7521','WARD','SALESMAN','7698','02-22-81','1250','500','30')
+INSERT INTO EMP
+values ('7566','JONES','MANAGER','7839','04-02-81','2975',NULL,'20')
+INSERT INTO EMP
+values ('7654','MARTIN','SALESMAN','7698','09-28-81','1250','1400','30')
+INSERT INTO EMP
+values ('7698','BLEKE','MANAGER','7839','05-01-81','2850',NULL,'30')
+INSERT INTO EMP
+values ('7782','CLARK','MANAGER','7839','06-09-81','2450',NULL,'10')
+INSERT INTO EMP
+values ('7788','SCOTT','ANALYST','7566','12-09-81','3000',NULL,'20')
+INSERT INTO EMP
+values ('7839','KING','PRESIDENT','','11-17-81','5000',NULL,'10')
+INSERT INTO EMP
+values ('7844','TURNER','SALESMAN','7698','09-08-81','1500','0','30')
+INSERT INTO EMP
+values ('7876','ADAMS','CLERK','7788','01-12-83','1100',NULL,'20')
+INSERT INTO EMP
+values ('7900','JAMES','CLERK','7788','01-12-83','1100',NULL,'20')
+INSERT INTO EMP
+values ('7902','FORD','ANALYST','7566','12-03-81','3000',NULL,'20')
+INSERT INTO EMP
+values ('7934','MILLER','CLERK','7782','01-23-81','1300',NULL,'10')
+
+
+--1 Crear una transaccion que aumente el 20% el salario de los empleados que tengan comisión nula
+begin transaction
+	update EMP set SAL=SAL*1.2 where COMM = NULL
+commit transaction
+--2 Realiza un procedimiento almacenado para actualizar el salatrio de un empleado por su numero de empleado
+create procedure ActualizarSal
+@empno int,
+@salnuev float
+as
+begin 
+update EMP set SAL=@salnuev where EMPNO=@empno
+end
+--3 Crea un procedimiento almacenado que selecciona los salarios y las comisiones de los empleados de cualquier departamento en la tabla
+create procedure BusquedaSalYCom
+as
+begin
+select SAL,COMM from EMP 
+end
+--4 Muestra el nombre de un empleado, comisión para los que tienen y no y su fecha de contratación, utiliza joins
+
+--5 Crear un procedimiento almacenado que calcule el salario promedio de un departamento, en base al número de departamento
+create procedure SalPromXDeptno
+as
+begin
+select DEPTNO,Avg(SAL) as "Promedio Salario" from EMP 
+end
+--6 Crea una transacción que cambie a Allen de puesto a Manager y su salario aumente a 2,900
+begin transaction 
+	update EMP set JOB='Manager',SAL=2900 where ENAME='Allen'
+commit transaction
+--7 Realiza un procedimiento almacenado que inserte un nuevo empleado a la tabla EMP
+CREATE PROCEDURE InsertarNewEmp
+@EmpNo INT, 
+@Ename VARCHAR (10), 
+@Job VARCHAR(9), 
+@Mgr INT, 
+@HireDate DATE, 
+@Sal float, 
+@Comm float, 
+@DeptNo INT
+AS
+BEGIN
+INSERT INTO EMP (EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO)
+VALUES (@EmpNo, @Ename, @Job, @Mgr, @HireDate, @Sal, @Comm, @DeptNo)
+END
+--8 Muestra el nombre del departamento, localización y el salario promedio, agrupado por localización utilizando joins
+select D.LOC,D.DNAME,avg(E.SAL) as 'Salario Promedio' from DEPT D
+left join EMP E on D.DEPTNO=E.DEPTNO
+group by D.DNAME, D.LOC
+--9 Realiza una transacción en donde elimines al empleado numero 7499 y aplica reversa
+begin transaction
+	delete from EMP where EMPNO=7499
+rollback transaction
+--10 Crea un procedimiento almacenado llamado "in_em" que toma varios parámetros (EmpNo,Ename,Job,Mgr,HireDate,Sal,Comm,DeptNo) y los utilice para insertar un nuevo empleado en la tabla emp
+CREATE PROCEDURE InEm 
+@EmpNo INT,
+@Ename VARCHAR(10), 
+@Job VARCHAR(9),
+@Mgr INT, 
+@HireDate DATE, 
+@Sal float, 
+@Comm float, 
+@DeptNo INT
+AS 
+BEGIN
+INSERT INTO EMP (EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO)
+VALUES (@EmpNo, @Ename, @Job, @Mgr, @HireDate, @Sal, @Comm, @DeptNo)
+END
