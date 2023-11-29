@@ -179,3 +179,102 @@ INSERT INTO Pokemon (IDPokemon,NombrePokemon,IDRegion,IDTipo,IDDebilidad,IDEvolu
 (0018,'Charizard',1,2,2,11,10,NULL,NULL),
 (0019,'Onix',1,8,NULL,12,9,NULL,NULL),
 (0020,'Steelex',2,NULL,14,NULL,9, NULL,8);--Se pueden agregar datos útiles sólo para combates
+
+-- Procedimientos almacenados:
+-- Insertar un nuevo Pokémon
+CREATE PROCEDURE InsertarNuevoPokemon(
+    @IDPokemon INT,
+    @NombrePokemon CHAR(15),
+    @IDRegion INT,
+    @IDTipo INT,
+    @IDDebilidad INT,
+    @IDEvolucion INT,
+    @IDEstadisticas INT,
+    @IDCaracteristicas INT,
+    @IDSetMovimientos INT
+)
+AS
+BEGIN
+    INSERT INTO Pokemon (IDPokemon, NombrePokemon, IDRegion, IDTipo, IDDebilidad, IDEvolucion, IDEstadisticas, IDCaracteristicas, IDSetMovimientos)
+    VALUES (@IDPokemon, @NombrePokemon, @IDRegion, @IDTipo, @IDDebilidad, @IDEvolucion, @IDEstadisticas, @IDCaracteristicas, @IDSetMovimientos);
+EN
+-- Insertar un nuevo tipo y debilidad
+CREATE PROCEDURE InsertarNuevoTipoYDebilidad(
+    @IDTipo INT,
+    @NombreTipo CHAR(20),
+    @IDDebilidad INT,
+    @IDTipoOrigen INT,
+    @IDTipoDebilidad INT
+)
+AS
+BEGIN
+    INSERT INTO Tipo (IDTipo, NombreTipo) VALUES (@IDTipo, @NombreTipo);
+    INSERT INTO Debilidad (IDDebilidad, IDTipoOrigen, IDTipoDebilidad) VALUES (@IDDebilidad, @IDTipoOrigen, @IDTipoDebilidad);
+END
+-- Eliminar un Pokémon por su nombre
+CREATE PROCEDURE EliminarPokemonPorNombre(
+    @NombrePokemon CHAR(15)
+)
+AS
+BEGIN
+    DELETE FROM Pokemon WHERE NombrePokemon = @NombrePokemon;
+END
+-- Editar un set de movimientos
+CREATE PROCEDURE EditarSetMovimientos(
+    @IDSetMovimientos INT,
+    @NuevosMovimientos CHAR(40)
+)
+AS
+BEGIN
+    UPDATE SetMovimientos SET NombresMovimientos=@NuevosMovimientos WHERE IDSetMovimientos = @IDSetMovimientos;
+END
+-- Insertar nuevas estadísticas
+CREATE PROCEDURE InsertarNuevasEstadisticas(
+    @IDEstadisticas INT,
+    @Ataque INT,
+    @Defensa INT,
+    @PuntosDeSalud INT,
+    @Velocidad INT
+)
+AS
+BEGIN
+    INSERT INTO Estadisticas (IDEstadisticas, Ataque, Defensa, PuntosDeSalud, Velocidad)
+    VALUES (@IDEstadisticas, @Ataque, @Defensa, @PuntosDeSalud, @Velocidad);
+END
+	
+-- Transacciones:
+-- Insertar más datos a la tabla Caracteristicas
+begin transaction
+INSERT INTO Caracteristicas (IDCaracteristicas, Tamaño, Peso, Genero)
+VALUES
+(11, 0.6, 18, 'Hembra'),
+(12, 1.2, 75, 'Macho');
+commit transaction
+-- Cuenta a los pokemon con el mismo nombre registrados en el sistema
+begin transaction
+SELECT NombrePokemon, COUNT(*) AS Cantidad FROM Pokemon GROUP BY NombrePokemon
+commit transaction
+-- Elimina al Pokemon Onix con reversibilidad
+begin transaction 
+delete Pokemon where NombrePokemon = 'Onix'
+rollback transaction 
+
+-- Joins:
+-- Muestra a los Pokémon de un tipo
+SELECT Pokemon.NombrePokemon, Tipo.NombreTipo FROM Pokemon
+JOIN Tipo ON Pokemon.IDTipo = Tipo.IDTipo
+WHERE Tipo.NombreTipo = 'Fuego'; --Se puede cambiar el tipo
+--Muestra los Pokémon de una región
+SELECT Pokemon.NombrePokemon, Region.NombreRegion FROM Pokemon
+JOIN Region ON Pokemon.IDRegion = Region.IDRegion
+WHERE Region.NombreRegion = 'Kanto'; -- La region se puede modificar
+-- Muestra los Pokémon que puedan evolucionar por un método de evolución
+SELECT Pokemon.NombrePokemon, Evolucion.PokemonEvolucion, MetodoEvolucion.MetodoEvolucion FROM Pokemon
+JOIN Evolucion ON Pokemon.IDEvolucion = Evolucion.IDEvolucion
+JOIN MetodoEvolucion ON Evolucion.IDMetodoEvolucion = MetodoEvolucion.IDMetodoEvolucion
+WHERE MetodoEvolucion.MetodoEvolucion = 'Subir de Nivel'; --Se puede cambiar el metodo de evolucion
+-- Muestra los Pokémon que son débiles a un tipo
+SELECT Pokemon.NombrePokemon, Debilidad.IDTipoDebilidad, Tipo.NombreTipo AS TipoDebilidad FROM Pokemon
+JOIN Debilidad ON Pokemon.IDDebilidad = Debilidad.IDDebilidad
+JOIN Tipo ON Debilidad.IDTipoDebilidad = Tipo.IDTipo
+WHERE Tipo.NombreTipo = 'Agua'; --Se puede cambiar el tipo
